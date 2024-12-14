@@ -1,8 +1,23 @@
 # src/preprocess.py
 
 import re
+import nltk
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
+
+# Ensure NLTK data is downloaded
+def download_nltk_data():
+    try:
+        nltk.data.find('tokenizers/punkt')
+    except LookupError:
+        nltk.download('punkt')
+        
+    try:
+        nltk.data.find('corpora/stopwords')
+    except LookupError:
+        nltk.download('stopwords')
+
+download_nltk_data()
 
 def preprocess_text(text):
     """
@@ -24,12 +39,8 @@ def preprocess_text(text):
     # Return the cleaned text
     return ' '.join(filtered_tokens)
 
-
 if __name__ == "__main__":
-    import nltk
-    nltk.download('punkt')
-    nltk.download('stopwords')
-
+    # Example usage
     # Add test input and print the result
     sample_text = "Hello, this is a sample text to test the preprocess function!"
     processed_text = preprocess_text(sample_text)

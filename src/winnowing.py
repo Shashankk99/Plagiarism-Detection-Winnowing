@@ -1,4 +1,5 @@
 # src/winnowing.py
+from .hashing import rolling_hash
 
 def winnow_hashes(hashes, window_size):
     """
