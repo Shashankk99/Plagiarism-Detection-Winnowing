@@ -41,4 +41,24 @@ The core functionality is complete! The system:
 - Testing with larger datasets and fine-tuning parameters like k-gram size and window size.
 - Exploring additional algorithms (like Rabin-Karp and Suffix Trees) for comparison.
 
+  ## Testing
+
+This project includes a comprehensive suite of unit tests to ensure the reliability and correctness of each module. All test files are located in the `tests/` directory.
+
+### Test Files
+
+- `test_preprocess.py`: Tests for the text preprocessing functions.
+- `test_hashing.py`: Tests for the hashing functions.
+- `test_winnowing.py`: Tests for the Winnowing algorithm implementation.
+- `test_similarity.py`: Tests for the similarity computation functions.
+- `test_main.py`: Tests for the main application workflow.
+
+### Running Tests
+
+To execute all tests, ensure you're in the project root directory and run:
+
+```bash
+pytest tests/
+
+
 ---
