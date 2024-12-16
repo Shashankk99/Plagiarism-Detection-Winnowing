@@ -2,6 +2,12 @@ import streamlit as st
 import sys
 import os
 import pickle
+import nltk
+nltk.download('punkt')  # Ensure correct tokenizer is downloaded
+nltk.download('wordnet')
+nltk.download('stopwords')
+nltk.download('averaged_perceptron_tagger')
+
 
 # Add src to sys.path
 current_dir = os.path.dirname(os.path.abspath(__file__))

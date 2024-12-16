@@ -1,5 +1,3 @@
-# src/preprocess.py
-
 import re
 import nltk
 from nltk.corpus import stopwords
@@ -10,21 +8,17 @@ from nltk.corpus import wordnet
 
 def download_nltk_data():
     required_packages = [
-        'punkt',
+        'punkt',  # Correct tokenizer
         'wordnet',
         'omw-1.4',
         'stopwords',
-        'averaged_perceptron_tagger',
-        'averaged_perceptron_tagger_eng'
+        'averaged_perceptron_tagger'
     ]
     for package in required_packages:
         try:
-            if package == 'punkt':
-                nltk.data.find(f'tokenizers/{package}')
-            elif package in ['wordnet', 'omw-1.4', 'stopwords', 'averaged_perceptron_tagger', 'averaged_perceptron_tagger_eng']:
-                nltk.data.find(f'corpora/{package}')
+            nltk.data.find(f'corpora/{package}')  # Check if resource exists
         except LookupError:
-            nltk.download(package)
+            nltk.download(package)  # Download missing resource
 
 download_nltk_data()
 
@@ -54,9 +48,3 @@ def preprocess_text(text):
             lemmatized_word = lemmatizer.lemmatize(word, pos=wordnet_pos)
             lemmatized_tokens.append(lemmatized_word)
     return ' '.join(lemmatized_tokens)
-
-if __name__ == "__main__":
-    sample_text = "The children are playing with their toys."
-    processed_text = preprocess_text(sample_text)
-    print(f"Original Text: {sample_text}")
-    print(f"Processed Text: {processed_text}")
