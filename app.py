@@ -4,8 +4,9 @@ import os
 import pickle
 import nltk
 
-# Ensure punkt tokenizer is available
-nltk.download("punkt")
+# Download necessary NLTK resources
+nltk.data.path.append(os.path.join(os.path.dirname(__file__), "nltk_data"))  # Custom path for Streamlit deployment
+nltk.download("punkt", download_dir=os.path.join(os.path.dirname(__file__), "nltk_data"))
 
 # Add src to sys.path
 current_dir = os.path.dirname(os.path.abspath(__file__))
