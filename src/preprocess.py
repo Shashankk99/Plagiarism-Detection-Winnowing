@@ -1,84 +1,61 @@
 # src/preprocess.py
 
-import re
 import nltk
-import os
-from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
+from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
-from nltk import pos_tag
-from nltk.corpus import wordnet
+import re
+import string
 
-# Set NLTK data path to match the one used in app.py
-nltk_data_dir = os.path.join(os.path.dirname(__file__), "..", "nltk_data")
-nltk.data.path.append(nltk_data_dir)
-
-def get_wordnet_pos(nltk_pos_tag):
+def download_nltk_resources():
     """
-    Map NLTK POS tags to WordNet POS tags for accurate lemmatization.
-    
-    Args:
-        nltk_pos_tag (str): POS tag from NLTK's pos_tag.
-    
-    Returns:
-        wordnet POS tag or wordnet.NOUN as default.
+    Downloads necessary NLTK resources if they are not already present.
     """
-    if nltk_pos_tag.startswith('J'):
-        return wordnet.ADJ
-    elif nltk_pos_tag.startswith('V'):
-        return wordnet.VERB
-    elif nltk_pos_tag.startswith('N'):
-        return wordnet.NOUN
-    elif nltk_pos_tag.startswith('R'):
-        return wordnet.ADV
-    else:
-        return wordnet.NOUN
+    required_resources = ['punkt', 'wordnet', 'stopwords']
+    for resource in required_resources:
+        try:
+            nltk.data.find(f'tokenizers/{resource}' if resource == 'punkt' else f'corpora/{resource}')
+            print(f"NLTK resource '{resource}' already downloaded.")
+        except LookupError:
+            print(f"Downloading NLTK resource: {resource}")
+            nltk.download(resource)
 
 def preprocess_text(text):
     """
-    Preprocesses the input text by:
-    - Converting text to lowercase
-    - Removing punctuation
-    - Tokenizing words
-    - Removing stopwords
-    - Lemmatizing tokens based on POS tags
-    
+    Preprocesses the input text by performing the following steps:
+    1. Lowercasing
+    2. Punctuation removal
+    3. Tokenization
+    4. Stopword removal
+    5. Lemmatization
+
     Args:
-        text (str): The raw text to preprocess.
-        
+        text (str): The text to preprocess.
+
     Returns:
-        str: The preprocessed text as a single string of lemmatized tokens.
+        str: The preprocessed text.
     """
-    # Convert to lowercase
+    # Ensure required NLTK resources are available
+    download_nltk_resources()
+    
+    # Lowercase the text
     text = text.lower()
-
+    
     # Remove punctuation
-    text = re.sub(r'[^\w\s]', '', text)
-
+    text = text.translate(str.maketrans('', '', string.punctuation))
+    
     # Tokenize words
-    tokens = word_tokenize(text)
-
-    # POS tagging without specifying lang (use default English POS tagger)
-    pos_tags = pos_tag(tokens)  # Removed lang parameter
-
-    # Initialize lemmatizer
-    lemmatizer = WordNetLemmatizer()
-
-    # Remove stopwords and lemmatize tokens based on POS tags
+    tokens = word_tokenize(text, language='english')  # Corrected language parameter
+    
+    # Remove stopwords
     stop_words = set(stopwords.words('english'))
-    lemmatized_tokens = []
-    for word, tag in pos_tags:
-        if word not in stop_words:
-            wordnet_pos = get_wordnet_pos(tag)
-            lemmatized_word = lemmatizer.lemmatize(word, pos=wordnet_pos)
-            lemmatized_tokens.append(lemmatized_word)
-
-    # Return the cleaned text
-    return ' '.join(lemmatized_tokens)
-
-if __name__ == "__main__":
-    # Example usage
-    sample_text = "The children are playing with their toys."
-    processed_text = preprocess_text(sample_text)
-    print(f"Original Text: {sample_text}")
-    print(f"Processed Text: {processed_text}")
+    tokens = [word for word in tokens if word not in stop_words]
+    
+    # Lemmatization
+    lemmatizer = WordNetLemmatizer()
+    tokens = [lemmatizer.lemmatize(word) for word in tokens]
+    
+    # Join tokens back to string
+    processed_text = ' '.join(tokens)
+    
+    return processed_text
