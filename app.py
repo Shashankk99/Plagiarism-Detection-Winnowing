@@ -1,12 +1,35 @@
+# app.py
+
 import streamlit as st
 import sys
 import os
 import pickle
 import nltk
 
+# Define the NLTK data directory
+nltk_data_dir = os.path.join(os.path.dirname(__file__), "nltk_data")
+os.makedirs(nltk_data_dir, exist_ok=True)  # Create the directory if it doesn't exist
+
+# Append the custom NLTK data path
+nltk.data.path.append(nltk_data_dir)
+
 # Download necessary NLTK resources
-nltk.data.path.append(os.path.join(os.path.dirname(__file__), "nltk_data"))  # Custom path for Streamlit deployment
-nltk.download("punkt", download_dir=os.path.join(os.path.dirname(__file__), "nltk_data"))
+required_packages = [
+    "punkt",
+    "wordnet",
+    "omw-1.4",
+    "stopwords",
+    "averaged_perceptron_tagger"
+]
+
+for package in required_packages:
+    try:
+        if package == "punkt":
+            nltk.data.find(f'tokenizers/{package}')
+        else:
+            nltk.data.find(f'corpora/{package}')
+    except LookupError:
+        nltk.download(package, download_dir=nltk_data_dir)
 
 # Add src to sys.path
 current_dir = os.path.dirname(os.path.abspath(__file__))
@@ -21,6 +44,10 @@ from similarity import compute_similarity, compute_semantic_similarity
 
 # Load the trained model
 model_path = os.path.join(current_dir, "plagiarism_model.pkl")
+if not os.path.exists(model_path):
+    st.error("Model file not found. Please ensure 'plagiarism_model.pkl' is in the project directory.")
+    st.stop()
+
 with open(model_path, "rb") as f:
     clf = pickle.load(f)
 
@@ -76,7 +103,7 @@ if st.button("Compute Similarity & Predict"):
                 lexical_similarity_score = compute_similarity(fingerprints1, fingerprints2)
 
             # Compute semantic similarity
-            semantic_similarity_score = compute_semantic_similarity(processed_text1, processed_text2)
+            semantic_similarity_score = compute_semantic_similarity(text1, text2)  # Use original texts for semantic similarity
 
             st.write("### Similarity Scores")
             st.write(f"**Lexical Similarity Score:** {lexical_similarity_score:.2f}%")
