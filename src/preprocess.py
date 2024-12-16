@@ -6,21 +6,11 @@ from nltk.stem import WordNetLemmatizer
 from nltk import pos_tag
 from nltk.corpus import wordnet
 
-def download_nltk_data():
-    required_packages = [
-        'punkt',  # Correct tokenizer
-        'wordnet',
-        'omw-1.4',
-        'stopwords',
-        'averaged_perceptron_tagger'
-    ]
-    for package in required_packages:
-        try:
-            nltk.data.find(f'corpora/{package}')  # Check if resource exists
-        except LookupError:
-            nltk.download(package)  # Download missing resource
-
-download_nltk_data()
+# Ensure NLTK resources are downloaded
+nltk.download('punkt', quiet=True)
+nltk.download('wordnet', quiet=True)
+nltk.download('stopwords', quiet=True)
+nltk.download('averaged_perceptron_tagger', quiet=True)
 
 def get_wordnet_pos(nltk_pos_tag):
     if nltk_pos_tag.startswith('J'):
