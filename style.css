@@ -1,0 +1,28 @@
+svg {
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+  }
+  
+  .node {
+    fill: #fff;
+    stroke: #000;
+    stroke-width: 1.5;
+  }
+  
+  .label {
+    text-anchor: middle;
+    font-weight: bold;
+  }
+  
+  .edge {
+    stroke: #000;
+    stroke-width: 1;
+    fill: none;
+    marker-end: url(#arrow);
+  }
+  
+  .path-label {
+    font-size: 10px;
+    fill: #555;
+  }
+  

@@ -2,10 +2,10 @@
 
 import sys
 import os
-from .preprocess import preprocess_text
-from .hashing import rolling_hash
-from .winnowing import winnow_hashes
-from .similarity import compute_similarity
+from src.preprocess import preprocess_text
+from src.hashing import rolling_hash
+from src.winnowing import winnow_hashes
+from src.similarity import compute_similarity, compute_semantic_similarity
 
 def main():
     try:
@@ -18,9 +18,9 @@ def main():
         file2_path = os.path.join(data_dir, 'text2.txt')
 
         # Load and preprocess text files
-        with open(file1_path, 'r') as file:
+        with open(file1_path, 'r', encoding='utf-8') as file:
             text1 = file.read()
-        with open(file2_path, 'r') as file:
+        with open(file2_path, 'r', encoding='utf-8') as file:
             text2 = file.read()
 
         processed_text1 = preprocess_text(text1)
@@ -42,9 +42,15 @@ def main():
         fingerprints1 = winnow_hashes(hashes1, window_size)
         fingerprints2 = winnow_hashes(hashes2, window_size)
 
-        # Compute similarity score
-        similarity_score = compute_similarity(fingerprints1, fingerprints2)
-        print(f"Similarity Score: {similarity_score}")
+        # Compute lexical similarity score
+        lexical_similarity_score = compute_similarity(fingerprints1, fingerprints2)
+
+        # Compute semantic similarity score
+        semantic_similarity_score = compute_semantic_similarity(processed_text1, processed_text2)
+
+        # Print both scores
+        print(f"Lexical Similarity Score: {lexical_similarity_score:.2f}%")
+        print(f"Semantic Similarity Score: {semantic_similarity_score:.2f}%")
     
     except FileNotFoundError as e:
         print(f"Error: {e}")

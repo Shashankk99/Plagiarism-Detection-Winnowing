@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Plagiarism Detection Architecture</title>
+  <style>
+    svg {
+      font-family: Arial, sans-serif;
+      font-size: 12px;
+    }
+    .node {
+      fill: #fff;
+      stroke: #000;
+      stroke-width: 1.5;
+    }
+    .label {
+      text-anchor: middle;
+      font-weight: bold;
+    }
+    .edge {
+      stroke: #000;
+      stroke-width: 1;
+      fill: none;
+      marker-end: url(#arrow);
+    }
+    .path-label {
+      font-size: 10px;
+      fill: #555;
+    }
+  </style>
+</head>
+<body>
+  <h1 style="text-align: center;">Plagiarism Detection Architecture</h1>
+  <svg width="800" height="700">
+    <!-- Arrow definition -->
+    <defs>
+      <marker id="arrow" markerWidth="10" markerHeight="10" refX="10" refY="5" orient="auto">
+        <path d="M0,0 L10,5 L0,10 Z" fill="#000" />
+      </marker>
+    </defs>
+
+    <!-- Nodes -->
+    <!-- Text 1 -->
+    <rect x="100" y="50" width="120" height="40" class="node"></rect>
+    <text x="160" y="75" class="label">Text 1</text>
+
+    <!-- Text 2 -->
+    <rect x="400" y="50" width="120" height="40" class="node"></rect>
+    <text x="460" y="75" class="label">Text 2</text>
+
+    <!-- Preprocessing -->
+    <rect x="250" y="150" width="150" height="40" class="node"></rect>
+    <text x="325" y="175" class="label">Preprocessing</text>
+
+    <!-- Rolling Hash -->
+    <rect x="100" y="250" width="150" height="40" class="node"></rect>
+    <text x="175" y="275" class="label">Rolling Hash</text>
+
+    <!-- Semantic Embeddings -->
+    <rect x="400" y="250" width="160" height="40" class="node"></rect>
+    <text x="480" y="275" class="label">Semantic Embeddings</text>
+
+    <!-- Lexical Similarity -->
+    <rect x="100" y="350" width="150" height="40" class="node"></rect>
+    <text x="175" y="375" class="label">Lexical Similarity</text>
+
+    <!-- Semantic Similarity -->
+    <rect x="400" y="350" width="160" height="40" class="node"></rect>
+    <text x="480" y="375" class="label">Semantic Similarity</text>
+
+    <!-- XGBoost -->
+    <rect x="250" y="450" width="150" height="40" class="node"></rect>
+    <text x="325" y="475" class="label">XGBoost</text>
+
+    <!-- Prediction -->
+    <rect x="250" y="550" width="150" height="40" class="node"></rect>
+    <text x="325" y="575" class="label">Prediction</text>
+
+    <!-- Edges -->
+    <!-- Text inputs to Preprocessing -->
+    <line x1="160" y1="90" x2="325" y2="150" class="edge"></line>
+    <line x1="460" y1="90" x2="325" y2="150" class="edge"></line>
+
+    <!-- Preprocessing to Rolling Hash and Semantic Embeddings -->
+    <line x1="325" y1="190" x2="175" y2="250" class="edge"></line>
+    <line x1="325" y1="190" x2="480" y2="250" class="edge"></line>
+
+    <!-- Rolling Hash to Lexical Similarity -->
+    <line x1="175" y1="290" x2="175" y2="350" class="edge"></line>
+
+    <!-- Semantic Embeddings to Semantic Similarity -->
+    <line x1="480" y1="290" x2="480" y2="350" class="edge"></line>
+
+    <!-- Lexical & Semantic Similarity to XGBoost -->
+    <line x1="175" y1="390" x2="325" y2="450" class="edge"></line>
+    <line x1="480" y1="390" x2="325" y2="450" class="edge"></line>
+
+    <!-- XGBoost to Prediction -->
+    <line x1="325" y1="490" x2="325" y2="550" class="edge"></line>
+  </svg>
+</body>
+</html>

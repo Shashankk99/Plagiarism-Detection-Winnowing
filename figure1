@@ -1,0 +1,27 @@
+// Plagiarism Detection Architecture
+digraph {
+	concentrate=true fontsize=10 rankdir=TB splines=ortho
+	T1 [label="Text 1" shape=box]
+	T2 [label="Text 2" shape=box]
+	P [label=Preprocessing shape=box]
+	R [label="Rolling Hash
++ Winnowing" shape=box]
+	E [label="Semantic
+Embeddings" shape=box]
+	L [label="Lexical
+Similarity" shape=box]
+	S [label="Semantic
+Similarity" shape=box]
+	X [label="XGBoost
+Classifier" shape=box]
+	D [label=Prediction shape=box]
+	T1 -> P
+	T2 -> P
+	P -> R [label="K-grams & Hashing path" fontsize=8]
+	P -> E [label="Embedding path" fontsize=8]
+	R -> L [label="Compare Fingerprints" fontsize=8]
+	E -> S [label="Cosine Similarity" fontsize=8]
+	L -> X [label="Feature (Lexical Score)" fontsize=8]
+	S -> X [label="Feature (Semantic Score)" fontsize=8]
+	X -> D
+}
