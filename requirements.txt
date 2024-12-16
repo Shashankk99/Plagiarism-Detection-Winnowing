@@ -4,3 +4,6 @@ nltk
 sentence-transformers
 streamlit
 scikit-learn
+pandas
+numpy
+xgboost
