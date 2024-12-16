@@ -1,4 +1,3 @@
-
 ---
 
 ```markdown
@@ -6,16 +5,19 @@
 
 ## Overview
 
-Plagiarism detection is crucial in maintaining academic integrity and originality in professional content. Traditional methods often rely on lexical overlap, which can fail to identify paraphrased content where the wording differs significantly. This project introduces a **hybrid approach** that combines **lexical fingerprinting** (via rolling hash and winnowing) with **semantic embeddings** from transformer-based models to enhance plagiarism detection capabilities.
+Plagiarism detection is pivotal in maintaining academic integrity and ensuring originality in professional content. Traditional methods often rely on **lexical overlap**, which can falter when identifying paraphrased content where the wording varies significantly. This project introduces a **hybrid approach** that combines **lexical fingerprinting** (using rolling hash and winnowing algorithms) with **semantic embeddings** derived from transformer-based models to enhance plagiarism detection capabilities.
 
 ## Features
 
-- **Lexical Fingerprinting**: Utilizes rolling hash and winnowing algorithms to identify exact and near-exact text overlaps.
-- **Semantic Embeddings**: Employs transformer-based models (e.g., BERT) to capture conceptual and contextual similarities between texts.
-- **Hybrid Classification**: Integrates both lexical and semantic similarity scores using an XGBoost classifier to predict plagiarism.
-- **Interactive Streamlit Application**: Provides a user-friendly interface for real-time similarity computations and parameter tuning.
+- **Lexical Fingerprinting**: Implements rolling hash and winnowing algorithms to identify exact and near-exact text overlaps.
+- **Semantic Embeddings**: Utilizes transformer-based models (e.g., BERT) to capture conceptual and contextual similarities between texts.
+- **Hybrid Classification**: Combines both lexical and semantic similarity scores using an XGBoost classifier to predict plagiarism.
+- **Interactive Streamlit Application**: Offers a user-friendly interface for real-time similarity computations and parameter adjustments.
+- **Comprehensive Testing**: Includes unit tests to ensure the reliability of core functionalities.
 
 ## Repository Structure
+
+Here's an overview of the repository's directory and file structure:
 
 ```
 Plagiarism-Detection-Winnowing/
@@ -45,17 +47,17 @@ Plagiarism-Detection-Winnowing/
 ├── data/
 │   ├── text1.txt                   # Sample text file 1
 │   ├── text2.txt                   # Sample text file 2
-│   ├── pairs.csv                    # Dataset pairs for training/testing
+│   ├── pairs.csv                   # Dataset pairs for training/testing
 │   ├── text1_backup.txt            # Backup of text1.txt
 │   └── text2_backup.txt            # Backup of text2.txt
-├── Research\ Paper/                # Directory containing research paper documents
+├── Research\ Paper/                 # Directory containing research paper documents
 ├── architecture.html               # HTML version of the architecture diagram
 ├── style.css                       # CSS styles for the Streamlit app
 ├── plagiarism_model.pkl            # Trained plagiarism detection model
 ├── scores_data.pkl                 # Serialized similarity scores data
-├── README.md                        # This README file
-├── requirements.txt                 # Python dependencies
-└── .gitignore                       # Git ignore file
+├── README.md                       # This README file
+├── requirements.txt                # Python dependencies
+└── .gitignore                      # Git ignore file
 ```
 
 ## Installation
@@ -123,6 +125,14 @@ streamlit run src/app.py
 ```
 
 Open the provided URL in your browser to access the application.
+
+### 4. Running Unit Tests
+
+To ensure all components are functioning correctly, run the unit tests located in the `tests/` directory.
+
+```bash
+python -m unittest discover tests
+```
 
 ## Code Structure and Explanation
 
@@ -195,7 +205,7 @@ def train_classifier(X, y):
     f1 = f1_score(y_test, predictions)
     print(f"Accuracy: {acc * 100:.2f}%")
     print(f"F1 Score: {f1 * 100:.2f}%")
-    joblib.dump(model, 'classifier.joblib')
+    joblib.dump(model, 'plagiarism_model.pkl')
     return model
 
 if __name__ == "__main__":
@@ -229,7 +239,7 @@ def main(text1, text2, k=5, w=4):
     emb1, emb2 = get_embeddings(text1, text2)
     semantic_sim = compute_semantic_similarity(emb1, emb2)
     
-    model = joblib.load('classifier.joblib')
+    model = joblib.load('plagiarism_model.pkl')
     prediction = model.predict([[lexical_sim, semantic_sim]])[0]
     
     print(f"Lexical Similarity: {lexical_sim:.2f}%")
@@ -280,7 +290,7 @@ def main():
             emb1, emb2 = get_embeddings(text1, text2)
             semantic_sim = compute_semantic_similarity(emb1, emb2)
             
-            model = joblib.load('classifier.joblib')
+            model = joblib.load('plagiarism_model.pkl')
             prediction = model.predict([[lexical_sim, semantic_sim]])[0]
             
             st.write(f"**Lexical Similarity:** {lexical_sim:.2f}%")
@@ -293,19 +303,82 @@ if __name__ == "__main__":
     main()
 ```
 
-### `src/utils.py`
+### `src/preprocess.py`
 
-Contains utility functions (if any). You can expand this as needed.
+Text preprocessing functions.
 
 ```python
-# utils.py
+import string
 
 def preprocess_text(text):
     """Normalize text by lowercasing and removing punctuation."""
-    import string
     text = text.lower()
     translator = str.maketrans('', '', string.punctuation)
     return text.translate(translator)
+```
+
+### `src/similarity.py`
+
+Similarity computation functions.
+
+```python
+from sklearn.metrics.pairwise import cosine_similarity
+
+def compute_cosine_similarity(emb1, emb2):
+    """Compute cosine similarity between two embeddings."""
+    sim = cosine_similarity([emb1], [emb2])[0][0]
+    return sim * 100  # Convert to percentage
+```
+
+### `src/winnowing.py`
+
+Winnowing algorithm implementation.
+
+```python
+def winnowing_algorithm(hashes, window_size=4):
+    """Implement the winnowing algorithm to select fingerprints."""
+    fingerprints = set()
+    min_hash = None
+    min_pos = -1
+    for i in range(len(hashes) - window_size + 1):
+        window = hashes[i:i+window_size]
+        current_min = min(window)
+        pos = window.index(current_min) + i
+        if current_min != min_hash:
+            fingerprints.add(current_min)
+            min_hash = current_min
+            min_pos = pos
+    return fingerprints
+```
+
+### `src/graph.py`
+
+Graph plotting functions.
+
+```python
+import matplotlib.pyplot as plt
+
+def plot_similarity_distribution(lex_sim, sem_sim):
+    """Plot the distribution of lexical and semantic similarities."""
+    plt.figure(figsize=(10,5))
+    plt.scatter(lex_sim, sem_sim, alpha=0.5)
+    plt.title('Lexical vs. Semantic Similarity')
+    plt.xlabel('Lexical Similarity (%)')
+    plt.ylabel('Semantic Similarity (%)')
+    plt.grid(True)
+    plt.savefig('figures/lex_sem_plot.png')
+    plt.close()
+```
+
+### `src/utils.py`
+
+Utility functions.
+
+```python
+def load_model(model_path):
+    """Load the trained plagiarism detection model."""
+    import joblib
+    return joblib.load(model_path)
 ```
 
 ### `tests/test_main.py`
@@ -328,157 +401,9 @@ if __name__ == '__main__':
     unittest.main()
 ```
 
-### `requirements.txt`
-
-Ensure you have a `requirements.txt` file with all necessary dependencies.
-
-```plaintext
-xgboost
-joblib
-sentence-transformers
-scikit-learn
-streamlit
-```
-
-### `.gitignore`
-
-To prevent accidentally committing unwanted files, ensure your `.gitignore` includes the following:
-
-```gitignore
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
-
-# C extensions
-*.so
-
-# Distribution / packaging
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-*.egg-info/
-.installed.cfg
-*.egg
-
-# Virtual environment
-venv/
-ENV/
-env/
-env.bak/
-venv.bak/
-
-# PyInstaller
-*.manifest
-*.spec
-
-# Installer logs
-pip-log.txt
-pip-delete-this-directory.txt
-
-# Unit test / coverage reports
-htmlcov/
-.tox/
-.nox/
-.coverage
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
-.pytest_cache/
-cover/
-
-# Translations
-*.mo
-*.pot
-
-# Django stuff:
-*.log
-local_settings.py
-db.sqlite3
-
-# Flask stuff:
-instance/
-.webassets-cache
-
-# Scrapy stuff:
-.scrapy
-
-# Sphinx documentation
-docs/_build/
-
-# PyBuilder
-target/
-
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# IPython
-profile_default/
-ipython_config.py
-
-# Environments
-.env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
-
-# Spyder project settings
-.spyderproject
-.spyderworkspace
-
-# Rope project settings
-.ropeproject
-
-# mkdocs documentation
-/site
-
-# mypy
-.mypy_cache/
-.dmypy.json
-dmypy.json
-
-# Pyre type checker
-.pyre/
-
-# pytype static type analyzer
-.pytype/
-
-# Cython debug symbols
-cython_debug/
-
-# Backup files
-*_backup.txt
-
-# Model and data artifacts
-*.pkl
-*.h5
-# Uncomment if you want to ignore all CSV files
-# *.csv
-
-# Miscellaneous
-.DS_Store
-Thumbs.db
-```
-
 ## Running Tests
 
-To run the unit tests, navigate to the root directory and execute:
+To execute the unit tests and ensure all components are functioning correctly, navigate to the root directory of the repository and run:
 
 ```bash
 python -m unittest discover tests
@@ -486,18 +411,85 @@ python -m unittest discover tests
 
 ## Demonstration: Streamlit Application
 
-The Streamlit app allows real-time parameter tuning and immediate feedback.
+The Streamlit app allows real-time parameter tuning and immediate feedback on plagiarism detection.
 
 ![Streamlit App Interface](figures/streamlit_screenshot.png)
 
 ## Additional Notes
 
 - **Figures Directory**: Ensure all image files (`figure1.png`, `lex_sem_plot.png`, `winnowing_analogy.png`, `streamlit_screenshot.png`) are placed in the `figures/` directory.
-- **Research Paper**: The `Research Paper/` directory contains all necessary documents related to your research.
+- **Research Paper**: The `Research Paper/` directory contains all necessary documents related to your research, including the final paper, LaTeX source, presentation slides, and references.
 - **Backup Files**: Backup files like `text1_backup.txt` and `text2_backup.txt` are excluded from version control via `.gitignore`.
+- **Model and Data Artifacts**: Files such as `plagiarism_model.pkl` and `scores_data.pkl` store trained models and serialized data, respectively. These are essential for running the prediction scripts and the Streamlit app.
 
 ## Acknowledgments
 
-The author thanks colleagues at Stevens Institute of Technology, the open-source NLP community, and acknowledges any internal research support.
+The author extends gratitude to colleagues at Stevens Institute of Technology, the open-source NLP community, and acknowledges any internal research support that contributed to this project.
 
 ---
+
+## Getting Started
+
+1. **Clone the Repository**
+
+   ```bash
+   git clone https://github.com/Shashankk99/Plagiarism-Detection-Winnowing.git
+   cd Plagiarism-Detection-Winnowing
+   ```
+
+2. **Set Up the Environment**
+
+   Create and activate a virtual environment:
+
+   ```bash
+   python3 -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
+
+3. **Install Dependencies**
+
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. **Train the Classifier**
+
+   Before making predictions, train the XGBoost classifier:
+
+   ```bash
+   python src/classifier.py
+   ```
+
+5. **Run the Plagiarism Detection Script**
+
+   ```bash
+   python src/main.py --text1 "Sample text one." --text2 "Another text example."
+   ```
+
+6. **Launch the Streamlit App**
+
+   ```bash
+   streamlit run src/app.py
+   ```
+
+   Open the provided URL in your browser to interact with the application.
+
+7. **Run Unit Tests**
+
+   Ensure all functionalities are working as expected:
+
+   ```bash
+   python -m unittest discover tests
+   ```
+
+## Contributing
+
+Contributions are welcome! Please fork the repository and submit a pull request for any enhancements or bug fixes.
+
+## License
+
+This project is licensed under the [MIT License](LICENSE).
+
+---
+
+**Note:** Replace placeholders like `[MIT License](LICENSE)` with actual links or relevant information as per your project requirements.
