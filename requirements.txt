@@ -7,4 +7,3 @@ scikit-learn
 pandas
 numpy
 xgboost
-python -m nltk.downloader punkt
