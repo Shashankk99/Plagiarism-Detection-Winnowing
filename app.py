@@ -2,6 +2,10 @@ import streamlit as st
 import sys
 import os
 import pickle
+import nltk
+
+# Ensure punkt tokenizer is available
+nltk.download("punkt")
 
 # Add src to sys.path
 current_dir = os.path.dirname(os.path.abspath(__file__))
