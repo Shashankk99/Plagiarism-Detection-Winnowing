@@ -8,6 +8,18 @@ from src.winnowing import winnow_hashes
 from src.similarity import compute_similarity, compute_semantic_similarity
 
 def main():
+    """
+    Main pipeline:
+    - Preprocess text
+    - Compute lexical (winnowing) and semantic similarities
+    - Print results
+
+    Complexity Overview:
+    - Preprocessing: O(n)
+    - Hashing + Winnowing: O(n)
+    - Semantic Encoding: O(n) for model inference
+    Overall: O(n) for a single pair of texts, where n is text length.
+    """
     try:
         # Define data directory relative to the script's location
         script_dir = os.path.dirname(os.path.abspath(__file__))

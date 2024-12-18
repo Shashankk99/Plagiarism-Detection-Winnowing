@@ -27,7 +27,7 @@ from hashing import rolling_hash
 from winnowing import winnow_hashes
 from similarity import compute_similarity, compute_semantic_similarity
 
-# Load the trained model
+# Load the trained model (best model chosen from train_model.py)
 model_path = os.path.join(current_dir, "plagiarism_model.pkl")
 with open(model_path, "rb") as f:
     clf = pickle.load(f)
@@ -38,7 +38,7 @@ st.write("""
 This application uses a hybrid approach to detect plagiarism:
 - **Lexical Similarity:** via rolling hash + winnowing.
 - **Semantic Similarity:** via a transformer-based embedding model.
-- **Classification:** Uses an XGBoost model trained on the Quora Question Pairs dataset.
+- **Classification:** Uses a model (chosen from several tried) trained on the Quora Question Pairs dataset.
 """)
 
 input_method = st.radio("Choose input method:", ["Direct Text Input", "Upload Text Files"])

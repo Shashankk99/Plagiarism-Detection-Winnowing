@@ -1,5 +1,11 @@
+# src/preprocess.py
+
 import re
 import nltk
+import os
+
+nltk.data.path.append(os.path.expanduser("~/.nltk_data"))
+
 from nltk.corpus import stopwords
 from nltk.tokenize import word_tokenize
 from nltk.stem import WordNetLemmatizer
@@ -25,6 +31,21 @@ def get_wordnet_pos(nltk_pos_tag):
         return wordnet.NOUN
 
 def preprocess_text(text):
+    """
+    Preprocess text by:
+    - Lowercasing
+    - Removing punctuation
+    - Tokenizing
+    - Removing stopwords
+    - Lemmatizing
+
+    Complexity:
+    - Tokenization: O(n) where n is the number of characters or words.
+    - Stopword removal and lemmatization: O(m) where m is number of tokens.
+    Overall roughly O(n) for typical text lengths.
+
+    Returns: A cleaned, lemmatized, and space-joined string.
+    """
     text = text.lower()
     text = re.sub(r'[^\w\s]', '', text)
     tokens = word_tokenize(text)
