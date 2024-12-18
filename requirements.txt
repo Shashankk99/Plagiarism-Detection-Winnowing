@@ -1,9 +1,9 @@
 pytest
 pytest-cov
-nltk
 sentence-transformers
 streamlit
 scikit-learn
 pandas
 numpy
 xgboost
+nltk==3.8.1
