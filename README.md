@@ -1,4 +1,3 @@
-```markdown
 # Hybrid Lexical-Semantic Plagiarism Detection
 
 ## Overview
@@ -30,7 +29,7 @@ Ensuring the originality of academic and professional content is crucial. Tradit
 
 ## Repository Structure
 
-```
+```plaintext
 Plagiarism-Detection-Winnowing/
 ├── documents/
 │   ├── my_paper.pdf                # Final research paper (IEEE format)
@@ -148,3 +147,14 @@ We acknowledge contributions from the Stevens Institute of Technology community,
 
 ## License
 This project is available under the [MIT License](LICENSE).
+
+---
+
+### Notes:
+- **Code Blocks:** Ensure that all code snippets and command-line instructions are enclosed within appropriate code blocks using triple backticks (```) with the relevant language identifier (e.g., `bash`, `python`, `plaintext`).
+  
+- **Repository Structure:** The repository structure is displayed using a `plaintext` code block for better readability.
+
+- **Links:** Make sure that the `[MIT License](LICENSE)` link correctly points to your license file in the repository.
+
+Feel free to customize any section further to better fit your project's specifics!
