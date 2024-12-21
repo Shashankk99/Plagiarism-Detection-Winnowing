@@ -156,5 +156,3 @@ This project is available under the [MIT License](LICENSE).
 - **Repository Structure:** The repository structure is displayed using a `plaintext` code block for better readability.
 
 - **Links:** Make sure that the `[MIT License](LICENSE)` link correctly points to your license file in the repository.
-
-Feel free to customize any section further to better fit your project's specifics!
